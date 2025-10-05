@@ -1,0 +1,63 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hotelmanagement/core/models/table.dart' as model; 
+import 'package:hotelmanagement/features/table/table_repository.dart';
+import 'package:hotelmanagement/core/models/order.dart';
+
+final tableRepositoryProvider = Provider<TableRepository>((ref) => TableRepository());
+
+final tablesProvider = StreamProvider.autoDispose((ref) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.getAllTables();
+});
+
+final addTableProvider = FutureProvider.autoDispose.family<void, model.Table>((ref, table) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.addTable(table);
+});
+
+final deleteTableProvider = FutureProvider.autoDispose.family<void, String>((ref, tableNumber) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.deleteTable(tableNumber);
+});
+
+final getTableByNumberProvider = FutureProvider.autoDispose.family<model.Table?, String>((ref, tableNumber) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.getTableByNumber(tableNumber);
+});
+
+final updateOrderInTableProvider = FutureProvider.autoDispose
+    .family<void, ({String tableNumber, Order order})>((ref, args) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.updateOrderInTable(args.tableNumber, args.order);
+});
+
+
+final addOrderToTableProvider = FutureProvider.autoDispose.family<void, ({String tableNumber, Order order})>((ref, args) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.addOrderToTable(args.tableNumber, args.order);
+});
+
+final checkTableExistsProvider = FutureProvider.autoDispose.family<bool, String>((ref, tableNumber) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.checkTableExists(tableNumber);
+});
+
+final getTableByIdProvider = FutureProvider.autoDispose.family<model.Table?, String>((ref, tableId) {
+  final respository = ref.watch(tableRepositoryProvider);
+  return respository.getTableById(tableId); 
+});
+
+final addTipToTableProvider = FutureProvider.autoDispose.family<void, ({String tableNumber, double tipAmount})>((ref, args) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.addTipToTable(args.tableNumber, args.tipAmount);
+});
+
+final getTotalTipsStreamProvider = StreamProvider.autoDispose<double>((ref) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.getTotalTipsStream();
+});
+
+final updateTableStatusProvider = FutureProvider.autoDispose.family<void, ({String tableNumber, String newStatus})>((ref, args) {
+  final repository = ref.watch(tableRepositoryProvider);
+  return repository.updateTableStatusProvider(args.tableNumber, args.newStatus);
+});
